@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+
+"use strict"
+
+const fs = require('fs')
+const path = require('path')
+const readline = require('readline')
+const exec = require('child_process').execSync
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+
+const co = require('co')
+const request = require('request')
+
+const SOURCE_URL = 'https://npm.taobao.org/mirrors/electron';
+
+function input() {
+  var electron = {
+    version: '0.37.6',
+    platform: 'darwin-x64'
+  }
+  return new Promise((resolve, reject) => {
+    rl.question('which version? ', answer => {
+      electron.version = answer
+      rl.question('which platform? ', answer => {
+        electron.platform = answer
+        resolve(electron)
+      })
+    })
+  })
+}
+
+function download(url, local) {
+  return new Promise((resolve, reject) => {
+    request(url).pipe(fs.createWriteStream(local))
+    .on('finish', function () {
+      console.log('zip file downloaded')
+      resolve()
+    })
+  })
+}
+
+function setup() {
+  co(function* () {
+    var electron = yield input()
+
+    var FILE = `electron-v${electron.version}-${electron.platform}.zip`
+    var url = `${SOURCE_URL}/${electron.version}/${FILE}`
+    console.log('target:' + url)
+
+    var p_root = path.join(__dirname, '../')
+    var p_file = path.join(p_root, 'build/electron.zip')
+    var p_full = path.join(p_root, 'build/electron')
+
+    exec('rm -rf ' + p_full, { cwd: p_root })
+    exec('mkdir -p ' + p_full, { cwd: p_root })
+    yield download(url, p_file)
+    exec('unzip ' + p_file + ' -d ' + p_full, { cwd: p_root })
+
+    console.log('setup ok')
+    rl.close()
+  })
+  .catch(error => {
+    console.log(error.message)
+  })
+}
+
+setup()
