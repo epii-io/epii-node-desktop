@@ -1,0 +1,29 @@
+{
+  "name": "epii-desktop",
+  "version": "0.0.0",
+  "description": "epii desktop",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sartrey/epii-node-desktop.git"
+  },
+  "keywords": [
+    "epii",
+    "web",
+    "desktop"
+  ],
+  "contributors": [
+    "Sartrey Lee <sartrey@163.com> (http://sartrey.cn/)",
+    "Cin Chen <eryue0220@gmail.com>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sartrey/epii-node-desktop/issues"
+  },
+  "homepage": "https://github.com/sartrey/epii-node-desktop#readme",
+  "dependencies": {
+  }
+}
